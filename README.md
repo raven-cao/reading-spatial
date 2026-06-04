@@ -2,7 +2,7 @@
 
 A personal knowledge map built while studying the AMICI paper and the CRC tumor-immune project in preparation for engaging with Azizi Lab at Columbia BME.
 
-**[→ Open the knowledge map](https://[your-username].github.io/amici-notes/)**
+**[→ Open the knowledge map](https://raven-cao.github.io/reading-spatial/)**
 
 ---
 
