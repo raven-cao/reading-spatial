@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tumor Microenvironment — Learning Notes</title>
+<link rel="stylesheet" href="../assets/css/page.css">
+</head>
+<body>
+<nav><a href="../index.html">← knowledge map</a><span>Immune System</span></nav>
+<div class="page-layer" style="color:var(--layer-immune)">Immune System</div>
+<h1>Tumor Microenvironment</h1>
+<p class="subtitle">The ecosystem that shapes immune function — and immune failure</p>
+
+<h2>What it is</h2>
+<p>A tumor is not a mass of cancer cells in a void. It's a local ecosystem containing: cancer cells, CD8+ and CD4+ T cells, regulatory T cells, macrophages, dendritic cells, cancer-associated fibroblasts (CAFs), blood vessels, and the extracellular matrix. Each component influences the others.</p>
+
+<h2>Why the tumor core is immunosuppressive</h2>
+<p><strong>Dense antigen exposure.</strong> Tumor cells constantly display neoantigens. T cells are perpetually stimulated — no "mission complete" signal arrives. Chronic stimulation drives exhaustion.</p>
+<p><strong>Hypoxia.</strong> Tumors grow faster than their blood supply. Low oxygen activates HIF-1α, which upregulates PD-L1 expression on tumor cells — hypoxia directly amplifies the immunosuppressive signal.</p>
+<p><strong>PD-L1 signaling.</strong> Tumor cells express PD-L1, which binds PD-1 on T cells. This is a hijacked self-tolerance mechanism — normally protects healthy tissue from autoimmune attack. Tumors evolved to exploit it.</p>
+<p><strong>Result:</strong> T cells in the core enter the exhaustion program — TOX activated, PD-1/TIM-3/CTLA4 upregulated, GZMB/IFNG downregulated. The immune system is present but disarmed.</p>
+
+<h2>Tumor margin vs. tumor core</h2>
+<p>The margin (interface between tumor and healthy tissue) has different signals: lower antigen density, access to dendritic cell co-stimulation, less severe hypoxia. T cells there may still be in effector state. This spatial heterogeneity — invisible to scRNA-seq — is one reason spatial transcriptomics changes the questions we can ask.</p>
+
+<div class="callout connection">
+  <div class="callout-label">Connection to AMICI</div>
+  AMICI's attention weights, in a TME context, literally measure which specific neighbors are driving T cell exhaustion. A high-weight edge from a tumor cell to a T cell, with ablation showing PD-1 drops when that tumor cell type is removed, is direct computational evidence of the immunosuppressive mechanism operating in that specific microenvironment.
+</div>
+
+<div class="related-links">
+  <h3>Connected concepts</h3>
+  <ul>
+    <li><a href="t-cell-states.html">T Cell States</a></li>
+    <li><a href="immune-checkpoints.html">Immune Checkpoints</a></li>
+    <li><a href="mss-msi.html">MSS vs MSI</a></li>
+    <li><a href="amici.html">AMICI</a></li>
+  </ul>
+</div>
+<footer><span>amici-notes</span><span>June 2026</span></footer>
+</body>
+</html>

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>T Cell States — Learning Notes</title>
+<link rel="stylesheet" href="../assets/css/page.css">
+</head>
+<body>
+<nav><a href="../index.html">← knowledge map</a><span>Immune System</span></nav>
+<div class="page-layer" style="color:var(--layer-immune)">Immune System</div>
+<h1>T Cell States</h1>
+<p class="subtitle">Effector vs. exhausted — the difference that determines tumor fate</p>
+
+<h2>The CD8+ T cell's job</h2>
+<p>Cytotoxic T lymphocytes (CD8+) are the immune system's killers. Origin: bone marrow → thymus maturation (hence "T"). Function: recognize abnormal cells via TCR, approach, release perforin (punches holes in target membrane) and granzyme B (enters through holes, triggers apoptosis). Also secrete IFN-γ to recruit other immune cells.</p>
+
+<h2>Effector state — armed and fighting</h2>
+<ul>
+  <li><strong>GZMB</strong> (granzyme B) — high: loaded weapon</li>
+  <li><strong>PRF1</strong> (perforin) — high: delivery mechanism for granzyme</li>
+  <li><strong>IFNG</strong> (interferon-γ) — high: calling for backup</li>
+  <li><strong>TNF</strong> — high: direct pro-inflammatory signal</li>
+  <li>PD-1, TIM-3 — low: brakes off</li>
+</ul>
+
+<h2>Exhausted state — alive but disarmed</h2>
+<ul>
+  <li><strong>PDCD1</strong> (encodes PD-1) — high: brake pedal oversized and sensitive</li>
+  <li><strong>HAVCR2</strong> (encodes TIM-3) — high: second brake system</li>
+  <li><strong>CTLA4, TIGIT</strong> — high: third and fourth brakes</li>
+  <li><strong>TOX</strong> — high: the master transcription factor that locks in exhaustion</li>
+  <li>GZMB, IFNG — low: weapons holstered</li>
+</ul>
+
+<div class="callout insight">
+  <div class="callout-label">Exhaustion is active, not passive</div>
+  Exhaustion isn't cellular damage or death. It's an adaptive program — cells chronically stimulated without resolution activate TOX, which epigenetically reprograms gene expression, locking the cell into a low-reactivity state. This prevents autoimmune damage from runaway T cell activity. From the tumor's perspective, it's a feature, not a bug.
+</div>
+
+<h2>Why exhaustion is partially irreversible</h2>
+<p>TOX-driven epigenetic changes (chromatin remodeling, DNA methylation patterns) are stable and self-reinforcing, like cell differentiation states. PD-1 inhibitors remove one brake but can't reverse the underlying epigenetic reprogramming. Deeply exhausted T cells may not recover full effector function even after checkpoint blockade — relevant to why late-stage MSS tumors often don't respond to immunotherapy.</p>
+
+<h2>The key question for the CRC project</h2>
+<p>In MSI tumors, what signals in the microenvironment are slowing or preventing this exhaustion program? That's what AMICI's attention weights are designed to reveal.</p>
+
+<div class="related-links">
+  <h3>Connected concepts</h3>
+  <ul>
+    <li><a href="tme.html">Tumor Microenvironment</a></li>
+    <li><a href="immune-checkpoints.html">Immune Checkpoints</a></li>
+    <li><a href="cell-differentiation.html">Cell Differentiation</a></li>
+    <li><a href="mss-msi.html">MSS vs MSI</a></li>
+    <li><a href="amici.html">AMICI</a></li>
+  </ul>
+</div>
+<footer><span>amici-notes</span><span>June 2026</span></footer>
+</body>
+</html>

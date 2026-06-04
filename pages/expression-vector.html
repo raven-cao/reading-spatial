@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gene Expression Vector — Learning Notes</title>
+<link rel="stylesheet" href="../assets/css/page.css">
+</head>
+<body>
+<nav><a href="../index.html">← knowledge map</a><span>ML & AMICI</span></nav>
+<div class="page-layer" style="color:var(--layer-ml)">ML & AMICI</div>
+<h1>Gene Expression Vector</h1>
+<p class="subtitle">The mathematical representation of a cell's state</p>
+
+<h2>Table vs. vector: same thing, different use</h2>
+<p>A spreadsheet row — 6,000 gene count columns for one cell — is a vector. The table is for human reading; the vector is for computation. The distinction matters because "vector" imports a whole mathematical framework: addition, scaling, distance, angle.</p>
+
+<h2>Why "ordered" matters</h2>
+<p>Position encodes meaning. <code>[23, 12, 0]</code> ≠ <code>[0, 12, 23]</code> if the first slot is CD8A and the third is EPCAM. The ordering is arbitrary but must be consistent across all cells. Unlike a set, a vector cares about position.</p>
+
+<h2>Cosine similarity</h2>
+<p><code>cos(A, B) = (A · B) / (|A| × |B|)</code></p>
+<p>Dot product divided by the product of lengths. This cancels out magnitude — a cell with twice the sequencing depth but the same expression pattern gets similarity 1.0 to the original. Only the <em>direction</em> (pattern of which genes are high/low) is compared, not absolute counts. This is biologically appropriate: technical differences in sequencing depth don't reflect biological state differences.</p>
+
+<div class="callout insight">
+  <div class="callout-label">The "direction" of a cell state</div>
+  In a 2-gene toy world: an effector T cell points toward (GZMB-high, PD-1-low). An exhausted T cell points toward (GZMB-low, PD-1-high). These are different directions in expression space. In 6,000 dimensions you can't visualize the direction, but the math works exactly the same way. "Direction" = the pattern of which genes are relatively high and which are low.
+</div>
+
+<h2>Why high-dimensional spaces are valid even if unimaginable</h2>
+<p>The rules (distance, angle, addition) are defined axiomatically — they extend to any number of dimensions by construction, not by physical analogy. The reason we trust 6,000-dimensional vectors to capture biology: predictions made in that space (cluster this cell with those, these two cells are similar) consistently match experimental validation. The math works; imagination is optional.</p>
+
+<h2>Why vectors instead of other similarity tools?</h2>
+<p>Other measures exist (Manhattan distance, Jaccard similarity). Vectors were chosen because cosine similarity captures <em>pattern alignment</em> — two cells in the same biological state but different sequencing depths. Also, vectors integrate into the larger ecosystem of linear algebra that neural network operations (dot products, matrix multiplications) are built on. The tool fits the downstream computation.</p>
+
+<div class="related-links">
+  <h3>Connected concepts</h3>
+  <ul>
+    <li><a href="attention.html">Attention Mechanism</a></li>
+    <li><a href="cell-annotation.html">Cell Annotation</a></li>
+    <li><a href="spatial-transcriptomics.html">Spatial Transcriptomics</a></li>
+    <li><a href="amici.html">AMICI</a></li>
+  </ul>
+</div>
+<footer><span>amici-notes</span><span>June 2026</span></footer>
+</body>
+</html>

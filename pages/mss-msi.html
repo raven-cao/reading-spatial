@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MSS vs MSI — Learning Notes</title>
+<link rel="stylesheet" href="../assets/css/page.css">
+</head>
+<body>
+<nav><a href="../index.html">← knowledge map</a><span>Cancer Biology</span></nav>
+<div class="page-layer" style="color:var(--layer-bio)">Cancer Biology</div>
+<h1>MSS vs MSI</h1>
+<p class="subtitle">Why one subtype responds to immunotherapy and the other doesn't</p>
+
+<h2>Microsatellites and mismatch repair</h2>
+<p>Microsatellites are short tandem repeat sequences in the genome (e.g., CACACACA...). When DNA replicates, the polymerase sometimes slips on these repeats, adding or deleting a repeat unit. The mismatch repair (MMR) system normally detects and corrects this. If MMR is defective (mutation or epigenetic silencing of MMR genes like MLH1, MSH2), errors accumulate across the genome. Microsatellites are especially vulnerable — they expand or contract in length. This genome-wide instability is called microsatellite instability (MSI).</p>
+
+<h2>Why MSI means more mutations</h2>
+<p>MMR deficiency doesn't just affect microsatellites — it affects the whole genome. Protein-coding genes accumulate frameshift mutations, many of which create novel peptide sequences (neoantigens) that the immune system can recognize as non-self.</p>
+
+<h2>The immune response difference</h2>
+<p><strong>MSI:</strong> High neoantigen load → immune system has many targets → robust T cell infiltration → some effector T cells persist despite suppressive signals → responds to checkpoint inhibitors (which amplify the existing response).</p>
+<p><strong>MSS:</strong> Low mutation burden → fewer neoantigens → less immune activation → T cells that do infiltrate face overwhelming suppression → don't respond to checkpoint inhibitors (there's no latent response to amplify).</p>
+
+<div class="callout question">
+  <div class="callout-label">The question this project asks</div>
+  Is the spatial organization of the tumor-immune interface different in MSI vs. MSS? Specifically — which cell-cell interactions in MSI tumors help T cells maintain effector state, and which interactions in MSS tumors drive exhaustion? AMICI on CosMx data can map these interactions at single-cell resolution.
+</div>
+
+<div class="related-links">
+  <h3>Connected concepts</h3>
+  <ul>
+    <li><a href="colorectal-cancer.html">Colorectal Cancer</a></li>
+    <li><a href="tme.html">Tumor Microenvironment</a></li>
+    <li><a href="t-cell-states.html">T Cell States</a></li>
+    <li><a href="immune-checkpoints.html">Immune Checkpoints</a></li>
+    <li><a href="amici.html">AMICI</a></li>
+  </ul>
+</div>
+<footer><span>amici-notes</span><span>June 2026</span></footer>
+</body>
+</html>

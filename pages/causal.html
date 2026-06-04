@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Causality vs Correlation — Learning Notes</title>
+<link rel="stylesheet" href="../assets/css/page.css">
+</head>
+<body>
+<nav><a href="../index.html">← knowledge map</a><span>ML & AMICI</span></nav>
+<div class="page-layer" style="color:var(--layer-ml)">ML & AMICI</div>
+<h1>Causality vs Correlation</h1>
+<p class="subtitle">Where AMICI sits on the evidence ladder</p>
+
+<h2>The ladder</h2>
+<ol>
+  <li><strong>Correlation (CellChat)</strong> — A and B co-occur. Tumor cells express PD-L1; T cells nearby express PD-1. Maybe causal, maybe both driven by a third factor, maybe spatial coincidence.</li>
+  <li><strong>Predictive (AMICI)</strong> — B's state can be predicted from A's information. Stronger: if A didn't carry information about B, prediction would fail. But confounders remain: A and B might both be responding to the same microenvironment signal.</li>
+  <li><strong>Interventional (knockout experiments)</strong> — Remove PD-L1 from tumor cells; T cell PD-1 expression drops. Now we've established direction and necessity.</li>
+  <li><strong>Mechanistic</strong> — Know the exact pathway, timing, and intermediate steps. Rarely fully achieved.</li>
+</ol>
+
+<div class="callout insight">
+  <div class="callout-label">AMICI's honest position</div>
+  AMICI produces "estimates" not "measurements." Its outputs are stronger than correlation but not proof. The word "estimates" in the paper title is deliberate — the authors are claiming predictive accuracy and interpretability, not causal closure.
+</div>
+
+<h2>The detective metaphor</h2>
+<p>AMICI is a detective narrowing from hundreds of possible suspects to a handful of high-confidence candidates. The experiment (knockout, drug perturbation) is the court that delivers the verdict. Computational analysis exists to make experiments more targeted — not to replace them.</p>
+
+<h2>Why this matters for the CRC project</h2>
+<p>When AMICI finds that tumor cells are the dominant influence on T cell exhaustion in MSS tumors, that's a hypothesis with quantitative support — not a conclusion. The next step is a wet lab intervention: block that specific sender signal and see if T cell state changes. AMICI tells you exactly where to look.</p>
+
+<div class="related-links">
+  <h3>Connected concepts</h3>
+  <ul>
+    <li><a href="amici.html">AMICI</a></li>
+    <li><a href="cellchat.html">CellChat & Its Limits</a></li>
+    <li><a href="t-cell-states.html">T Cell States</a></li>
+  </ul>
+</div>
+<footer><span>amici-notes</span><span>June 2026</span></footer>
+</body>
+</html>

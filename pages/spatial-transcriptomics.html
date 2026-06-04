@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Spatial Transcriptomics — Learning Notes</title>
+<link rel="stylesheet" href="../assets/css/page.css">
+</head>
+<body>
+<nav><a href="../index.html">← knowledge map</a><span>Technology & Methods</span></nav>
+<div class="page-layer" style="color:var(--layer-tech)">Technology & Methods</div>
+<h1>Spatial Transcriptomics</h1>
+<p class="subtitle">Gene expression, with location preserved</p>
+
+<h2>The problem it solves</h2>
+<p>Standard scRNA-seq dissociates tissue into a single-cell suspension — spatial context is destroyed. You learn what cell types exist and in what proportions, but not where they are relative to each other. A T cell that was sitting 20µm from a tumor cell looks identical in the data to one that was 500µm away, even if their behavior is completely different.</p>
+<p>Spatial transcriptomics restores the city map. Named <em>Nature Methods</em> Technology of the Year in 2022.</p>
+
+<h2>How it works (in-situ imaging approach)</h2>
+<p>Tissue section is placed on a slide. Fluorescent probes — one designed for each target gene — hybridize to their complementary mRNAs directly in the tissue without dissociation. Each probe carries a color barcode. A fluorescence microscope scans the section, recording signal locations. Combined with DAPI nuclear staining to identify cell boundaries, each mRNA signal is attributed to a specific cell. Output: a table where each row is a cell, columns are gene counts, plus (x,y) coordinates.</p>
+
+<h2>What the data looks like</h2>
+<p>Each cell = <strong>(x, y) coordinates</strong> + <strong>6,000-dimensional expression vector</strong>. The coordinates tell you where it lives in the tissue; the vector tells you what it's currently doing. Both are required for AMICI.</p>
+
+<div class="callout insight">
+  <div class="callout-label">Why this matters for T cell biology</div>
+  A T cell in the tumor core and a T cell at the tumor margin may both be labeled "CD8+ T cell" in scRNA-seq data. In spatial data, you discover they have completely different expression profiles — core cells exhausted, margin cells effector. The position is not just metadata; it explains the biology.
+</div>
+
+<h2>Spatial vs scRNA-seq</h2>
+<p>They're complementary, not competing. scRNA-seq gives deeper sequencing (more genes per cell, more cells per dollar). Spatial transcriptomics gives position but typically shallower coverage. The CosMx 6k panel is a targeted panel — 6,000 pre-selected genes, not the full ~20,000 transcriptome.</p>
+
+<div class="related-links">
+  <h3>Connected concepts</h3>
+  <ul>
+    <li><a href="cosmx.html">CosMx 6k Panel</a></li>
+    <li><a href="scrna-seq.html">scRNA-seq</a></li>
+    <li><a href="cell-annotation.html">Cell Annotation</a></li>
+    <li><a href="expression-vector.html">Gene Expression Vector</a></li>
+    <li><a href="amici.html">AMICI</a></li>
+  </ul>
+</div>
+<footer><span>amici-notes</span><span>June 2026</span></footer>
+</body>
+</html>

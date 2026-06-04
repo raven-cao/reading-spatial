@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Attention Mechanism — Learning Notes</title>
+<link rel="stylesheet" href="../assets/css/page.css">
+</head>
+<body>
+<nav>
+  <a href="../index.html">← knowledge map</a>
+  <span>ML & AMICI</span>
+</nav>
+
+<div class="page-layer" style="color:var(--layer-ml)">ML & AMICI</div>
+<h1>Attention Mechanism</h1>
+<p class="subtitle">Weighted aggregation of relevant information from a set of sources</p>
+
+<h2>The core idea</h2>
+<p>
+  Attention is a <strong>weighted sum</strong>. Given a target (the receiver cell), and a set of sources (neighbor cells), compute a weight for each source based on how relevant it is to the target. Then aggregate the source information proportionally to those weights.
+</p>
+<p>
+  The formula in AMICI: <code>weight = softmax(b₀ − b₁ × distance)</code>
+</p>
+<ul>
+  <li><code>b₀</code>: learned relevance — does this type of receiver respond to this neighbor's expression profile?</li>
+  <li><code>b₁ × distance</code>: spatial decay — closer neighbors get higher weight. b₁ is forced positive so distance can only reduce weight, never amplify it.</li>
+  <li><code>softmax</code>: normalizes all weights to sum to 1, and amplifies differences (via exponentiation).</li>
+</ul>
+
+<h2>What softmax actually does</h2>
+<p>
+  Raw scores might be [8, 3, 5, 1, 2]. Softmax: take e^x for each, divide by sum of all e^x. Result ≈ [0.84, 0.02, 0.11, 0.003, 0.008]. The highest score gets a dominant share. This makes the model commit to a sparse, interpretable allocation of attention.
+</p>
+
+<div class="callout insight">
+  <div class="callout-label">Why not just use raw similarity scores?</div>
+  Raw scores don't sum to 1, making them hard to interpret as "contribution." Softmax turns them into a probability distribution over neighbors — each weight is the fraction of the receiver's reconstruction attributable to that neighbor.
+</div>
+
+<h2>Multi-head attention</h2>
+<p>
+  AMICI runs multiple attention heads in parallel. Each head learns a different distance scale. Head 1 might specialize in 0–25µm (contact-dependent signaling), Head 2 in 0–100µm (paracrine diffusion). Biologically, this reflects that different signaling mechanisms operate at different ranges.
+</p>
+
+<h2>Why high similarity ≠ high influence</h2>
+<p>
+  Two cells can have similar expression because they share the same microenvironment (both are responding to a third signal), not because one is influencing the other. Attention weight is based on <em>predictive relevance</em> learned from training, not raw cosine similarity. A neighbor that consistently co-occurs with certain receiver states gets high weight even if their expression patterns are complementary rather than similar.
+</p>
+
+<div class="callout analogy">
+  <div class="callout-label">Office analogy</div>
+  b₀ measures: "every time a legal dept person with this kind of workload sits near an engineer, the engineer's tool usage changes in a predictable way." It's a learned historical pattern, not a similarity score. Lisa and the engineer don't use the same tools — but Lisa's presence predicts which tools the engineer picks up next.
+</div>
+
+<div class="related-links">
+  <h3>Connected concepts</h3>
+  <ul>
+    <li><a href="amici.html">AMICI</a></li>
+    <li><a href="expression-vector.html">Gene Expression Vector</a></li>
+    <li><a href="causality.html">Causality vs Correlation</a></li>
+  </ul>
+</div>
+
+<footer><span>amici-notes</span><span>June 2026</span></footer>
+</body>
+</html>

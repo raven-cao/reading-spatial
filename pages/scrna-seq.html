@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>scRNA-seq — Learning Notes</title>
+<link rel="stylesheet" href="../assets/css/page.css">
+</head>
+<body>
+<nav><a href="../index.html">← knowledge map</a><span>Technology & Methods</span></nav>
+<div class="page-layer" style="color:var(--layer-tech)">Technology & Methods</div>
+<h1>scRNA-seq</h1>
+<p class="subtitle">Single-cell RNA sequencing — the predecessor technology</p>
+
+<h2>What it measures</h2>
+<p>The transcriptome (all mRNA) of individual cells. Unlike bulk RNA-seq (which averages across thousands of cells), scRNA-seq resolves each cell separately. This revealed that supposedly uniform cell populations are actually heterogeneous — the discovery that drove the need for spatial tools.</p>
+
+<h2>The critical limitation</h2>
+<p>Tissue must be dissociated into a single-cell suspension before sequencing. This destroys spatial information. You know a T cell is exhausted; you don't know where it was sitting in the tumor. The position is permanently lost.</p>
+
+<h2>How it shaped the field</h2>
+<p>Landmark papers (including Zheng et al. 2021, <em>Science</em>, on colorectal cancer) used scRNA-seq to catalog T cell subtypes in tumors — exhausted, effector, regulatory, memory. But they couldn't explain why the same patient had both exhausted and effector T cells. Spatial transcriptomics answered that: location within the tumor determines state.</p>
+
+<div class="callout connection">
+  <div class="callout-label">Relationship to spatial transcriptomics</div>
+  scRNA-seq told us what cell types exist. Spatial transcriptomics told us where they are and how their neighbors shape their behavior. AMICI is built on spatial data precisely because the neighbor relationships — invisible to scRNA-seq — are the mechanism being studied.
+</div>
+
+<div class="related-links">
+  <h3>Connected concepts</h3>
+  <ul>
+    <li><a href="spatial-transcriptomics.html">Spatial Transcriptomics</a></li>
+    <li><a href="cell-annotation.html">Cell Annotation</a></li>
+    <li><a href="t-cell-states.html">T Cell States</a></li>
+  </ul>
+</div>
+<footer><span>amici-notes</span><span>June 2026</span></footer>
+</body>
+</html>

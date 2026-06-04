@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AMICI — Learning Notes</title>
+<link rel="stylesheet" href="../assets/css/page.css">
+</head>
+<body>
+<nav>
+  <a href="../index.html">← knowledge map</a>
+  <span>ML & AMICI</span>
+</nav>
+
+<div class="page-layer" style="color:var(--layer-ml)">ML & AMICI</div>
+<h1>AMICI</h1>
+<p class="subtitle">Attention-based Model for Inferring Cell–Cell Interactions</p>
+
+<h2>What problem does it solve?</h2>
+<p>
+  Prior tools like CellChat infer cell–cell communication by (1) averaging expression across all cells of a type, and (2) checking a curated ligand–receptor database. This has two fundamental limits: spatial information is discarded, and anything outside the database is invisible.
+</p>
+<p>
+  AMICI asks a different question entirely: can a cell's gene expression be <strong>predicted from its spatial neighbors'</strong> expression? If yes, those neighbors are influencing it — no database needed.
+</p>
+
+<div class="callout insight">
+  <div class="callout-label">Key insight</div>
+  AMICI doesn't verify that a ligand-receptor pair <em>can</em> bind. It detects whether a neighbor's presence <em>actually changes</em> the receiver cell's expression state. The difference between "possible" and "observed."
+</div>
+
+<h2>The five-stage pipeline</h2>
+
+<p><strong>1. Preprocessing</strong> — Cell segmentation (assign mRNA signals to cells), cell type annotation (marker gene → Leiden clustering → human labels), filter to highly variable genes, normalize to 1000 total counts per cell, log1p transform to compress the distribution.</p>
+
+<p><strong>2. Define neighbors</strong> — For each receiver cell, find the 50 nearest neighbors by Euclidean distance. Critically: <strong>same cell type neighbors are excluded</strong>. This prevents the model from taking the shortcut of copying nearby cells of the same type.</p>
+
+<p><strong>3. Self-supervised training (core)</strong> — Mask the receiver's expression vector. Let the model see only: (a) receiver cell type label, (b) 50 neighbors' expression vectors, (c) distance to each neighbor. Train it to reconstruct the masked expression. The correct answer is already in the data — no human labels needed. This is what "self-supervised" means.</p>
+
+<p><strong>4. Attention weights</strong> — Each neighbor gets a weight computed as:</p>
+
+<p><code>weight = softmax(b₀ − b₁ × distance)</code></p>
+
+<p>where <code>b₀</code> = learned relevance between receiver type and neighbor expression, <code>b₁</code> = distance decay coefficient (forced positive, so distance always reduces weight). A "null token" absorbs weight when no neighbor is actually relevant.</p>
+
+<p><strong>5. Downstream interpretation</strong> — Attention weights tell you <em>who</em> influences whom. Ablation (masking one sender type entirely and measuring reconstruction drop) tells you <em>which genes</em> are regulated by that interaction. The spatial distribution of weights tells you <em>at what distance</em> the interaction is effective (length scale).</p>
+
+<h2>Why "dynamic" and "interpretable"?</h2>
+<p>
+  <strong>Dynamic:</strong> Every cell has its own attention profile. Two CD8+ T cells in different locations get different weights — one exhausted by surrounding tumor cells, one activated near dendritic cells. CellChat gives one number per cell-type pair; AMICI gives one profile per individual cell.
+</p>
+<p>
+  <strong>Interpretable:</strong> AMICI uses a single attention layer. The weight on each neighbor is directly readable: "67% of this T cell's deviation from its type average is attributable to that tumor cell 20µm away." You can design an experiment around that. A deep black-box model can't give you that.
+</p>
+
+<div class="callout analogy">
+  <div class="callout-label">Analogy (toolbox version)</div>
+  Each cell is a worker with a toolbox of 6,000 tools. Their toolbox usage pattern reflects their state. AMICI asks: can I predict which tools worker A is using today, given the toolbox usage of the 50 nearest colleagues from other departments? If I can — those colleagues are influencing A's work. The attention weights tell me which colleague mattered most, and ablation tells me which specific tools they influenced.
+</div>
+
+<h2>What AMICI is not</h2>
+<p>
+  It is not a causal proof. Predicting B from A is stronger than correlating A and B (CellChat), but weaker than a knockout experiment. Confounders exist — two cells sharing a neighbor may both respond to the same upstream signal, making them appear to influence each other when neither does. AMICI narrows the hypothesis space; experiments close it.
+</p>
+
+<div class="callout question">
+  <div class="callout-label">My question / remaining uncertainty</div>
+  The model uses receiver cell type as an embedding input (b₀). This is learned during training. But what exactly is being encoded in that embedding? Is it something like "T cells are sensitive to PD-L1-expressing neighbors"? And how does this interact with the exclusion of same-type neighbors?
+</div>
+
+<h2>In the CRC project</h2>
+<p>
+  CosMx 6k spatial data → AMICI → compare attention weights in MSS vs. MSI tumors → identify which sender cell types exert different influence on tumor-infiltrating T cells → explain why MSI T cells maintain effector state while MSS T cells exhaust.
+</p>
+
+<div class="related-links">
+  <h3>Connected concepts</h3>
+  <ul>
+    <li><a href="attention.html">Attention Mechanism</a></li>
+    <li><a href="expression-vector.html">Gene Expression Vector</a></li>
+    <li><a href="cellchat.html">CellChat & Its Limits</a></li>
+    <li><a href="causal.html">Causality vs Correlation</a></li>
+    <li><a href="../pages/spatial-transcriptomics.html">Spatial Transcriptomics</a></li>
+    <li><a href="t-cell-states.html">T Cell States</a></li>
+    <li><a href="mss-msi.html">MSS vs MSI</a></li>
+  </ul>
+</div>
+
+<footer>
+  <span>amici-notes</span>
+  <span>June 2026</span>
+</footer>
+</body>
+</html>

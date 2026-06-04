@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CellChat & Its Limits — Learning Notes</title>
+<link rel="stylesheet" href="../assets/css/page.css">
+</head>
+<body>
+<nav><a href="../index.html">← knowledge map</a><span>ML & AMICI</span></nav>
+<div class="page-layer" style="color:var(--layer-ml)">ML & AMICI</div>
+<h1>CellChat & Its Limits</h1>
+<p class="subtitle">The dominant prior-generation cell-cell communication tool</p>
+
+<h2>What CellChat does</h2>
+<p>Groups cells by type → averages expression within each group → queries a curated ligand–receptor database → outputs a network graph of which cell types communicate via which pathways. Fast, interpretable, widely used.</p>
+
+<h2>Three fundamental limits</h2>
+<p><strong>1. Averaging erases individual variation.</strong> A pool of 200 CD8+ T cells contains exhausted cells (PD-1 high, GZMB low) and effector cells (PD-1 low, GZMB high). Their average is a phantom cell that doesn't exist and doesn't behave like either real population.</p>
+<p><strong>2. No spatial information.</strong> CellChat typically runs on dissociated scRNA-seq data — spatial position is gone. It cannot tell you whether the interaction is happening in the tumor core or the margin, at 20µm or 200µm.</p>
+<p><strong>3. Database-constrained.</strong> Only interactions in the curated ligand–receptor database are visible. Novel mechanisms, metabolite-mediated signaling, physical contact effects — if they're not in the table, CellChat can't see them.</p>
+
+<div class="callout analogy">
+  <div class="callout-label">City analogy</div>
+  CellChat: average menu of all restaurants in a city + average diet of all residents → conclude "there is food communication." AMICI: predict what a specific resident ate for lunch from which restaurants are within 50m of their home. If the prediction works, those restaurants influenced the choice.
+</div>
+
+<h2>Where CellChat remains valuable</h2>
+<p>It's not wrong — it's limited. For bulk datasets without spatial information, or for hypothesis generation across many samples quickly, CellChat is still useful. AMICI requires spatial data (CosMx, Visium, MERFISH); CellChat works on any scRNA-seq dataset. Different tools for different data.
+</p>
+
+<div class="related-links">
+  <h3>Connected concepts</h3>
+  <ul>
+    <li><a href="amici.html">AMICI</a></li>
+    <li><a href="causal.html">Causality vs Correlation</a></li>
+    <li><a href="spatial-transcriptomics.html">Spatial Transcriptomics</a></li>
+  </ul>
+</div>
+<footer><span>amici-notes</span><span>June 2026</span></footer>
+</body>
+</html>

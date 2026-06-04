@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cell Differentiation — Learning Notes</title>
+<link rel="stylesheet" href="../assets/css/page.css">
+</head>
+<body>
+<nav><a href="../index.html">← knowledge map</a><span>Immune System</span></nav>
+<div class="page-layer" style="color:var(--layer-immune)">Immune System</div>
+<h1>Cell Differentiation</h1>
+<p class="subtitle">Same DNA, different identities — and why states are sticky</p>
+
+<h2>The paradox</h2>
+<p>A T cell and a tumor cell carry nearly identical DNA. Yet they look different, function completely differently, and maintain those differences across cell divisions. How?</p>
+
+<h2>Epigenetic programming</h2>
+<p>DNA is wound around histone proteins. Where chromatin is tightly packed, genes can't be read — they're silenced. Where it's open, genes are accessible. Different cell types have different chromatin accessibility patterns, maintained by chemical modifications (histone acetylation, DNA methylation). Same book, different chapters open.</p>
+<p>During development, cells make progressive commitments: a stem cell → a T cell progenitor → a mature CD8+ T cell. Each step closes some options and opens others. The transcription factor network at each stage self-reinforces — TF-A activates TF-B which activates TF-A — creating a stable attractor state that resists perturbation.</p>
+
+<div class="callout insight">
+  <div class="callout-label">Exhaustion as partial re-differentiation</div>
+  T cell exhaustion is not random deterioration. TOX is a transcription factor that, when activated by chronic stimulation, systematically reprograms the cell's epigenetic state — moving it from the "effector" attractor toward the "exhausted" attractor. The cell's identity (still a T cell) doesn't change, but its functional program does. And like normal differentiation, this state becomes self-sustaining and partially irreversible.
+</div>
+
+<h2>Why this matters for immunotherapy</h2>
+<p>If exhaustion were just a transient inhibitory state, removing PD-1 brakes would fully restore T cell function. But because TOX has rewritten the epigenetic program, the weapons (GZMB, IFNG) may not come back even when the brakes are released. This is an active area of research — how to reverse or bypass epigenetic exhaustion, not just block checkpoints.</p>
+
+<div class="related-links">
+  <h3>Connected concepts</h3>
+  <ul>
+    <li><a href="t-cell-states.html">T Cell States</a></li>
+    <li><a href="tme.html">Tumor Microenvironment</a></li>
+    <li><a href="immune-checkpoints.html">Immune Checkpoints</a></li>
+  </ul>
+</div>
+<footer><span>amici-notes</span><span>June 2026</span></footer>
+</body>
+</html>

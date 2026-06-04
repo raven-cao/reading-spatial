@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Learning Map — AMICI & Spatial Transcriptomics</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=JetBrains+Mono:wght@400;500&display=swap');
+
+  :root {
+    --bg: #0a0c0f;
+    --surface: #111318;
+    --border: #1e2229;
+    --text: #d4cfc8;
+    --text-dim: #6b6860;
+    --text-bright: #ede8e0;
+
+    --layer-bio: #c97b3a;
+    --layer-immune: #7ab8a0;
+    --layer-tech: #6b8fc4;
+    --layer-ml: #a47bca;
+
+    --layer-bio-dim: rgba(201,123,58,0.15);
+    --layer-immune-dim: rgba(122,184,160,0.15);
+    --layer-tech-dim: rgba(107,143,196,0.15);
+    --layer-ml-dim: rgba(164,123,202,0.15);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'EB Garamond', Georgia, serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* Header */
+  header {
+    padding: 3rem 4rem 2rem;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+  }
+
+  .site-title {
+    font-size: 1.1rem;
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--text-dim);
+    letter-spacing: 0.05em;
+  }
+
+  .site-title span {
+    color: var(--text-bright);
+  }
+
+  .site-meta {
+    font-size: 0.85rem;
+    color: var(--text-dim);
+    text-align: right;
+    line-height: 1.8;
+  }
+
+  /* Hero */
+  .hero {
+    padding: 4rem 4rem 2rem;
+    max-width: 700px;
+  }
+
+  .hero h1 {
+    font-size: 2.8rem;
+    font-weight: 400;
+    line-height: 1.2;
+    color: var(--text-bright);
+    margin-bottom: 1rem;
+  }
+
+  .hero h1 em {
+    font-style: italic;
+    color: var(--layer-ml);
+  }
+
+  .hero p {
+    font-size: 1.1rem;
+    line-height: 1.7;
+    color: var(--text-dim);
+    max-width: 560px;
+  }
+
+  .hero p strong {
+    color: var(--text);
+    font-weight: 500;
+  }
+
+  /* Legend */
+  .legend {
+    display: flex;
+    gap: 2rem;
+    padding: 1.5rem 4rem;
+    border-bottom: 1px solid var(--border);
+    flex-wrap: wrap;
+  }
+
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.75rem;
+    color: var(--text-dim);
+    letter-spacing: 0.03em;
+  }
+
+  .legend-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+  }
+
+  /* Graph container */
+  .graph-container {
+    position: relative;
+    width: 100%;
+    height: 70vh;
+    min-height: 500px;
+    cursor: grab;
+  }
+
+  .graph-container:active { cursor: grabbing; }
+
+  #graph-svg {
+    width: 100%;
+    height: 100%;
+  }
+
+  .node circle {
+    stroke-width: 1.5;
+    transition: r 0.2s, opacity 0.2s;
+    cursor: pointer;
+  }
+
+  .node:hover circle { opacity: 0.9; }
+
+  .node text {
+    font-family: 'EB Garamond', serif;
+    font-size: 12px;
+    fill: var(--text);
+    pointer-events: none;
+    text-anchor: middle;
+    dominant-baseline: middle;
+  }
+
+  .node text.label-sub {
+    font-size: 10px;
+    fill: var(--text-dim);
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  .link {
+    stroke: var(--border);
+    stroke-width: 1;
+    fill: none;
+    opacity: 0.6;
+  }
+
+  .link.highlighted {
+    stroke-opacity: 1;
+    stroke-width: 1.5;
+  }
+
+  /* Tooltip */
+  #tooltip {
+    position: fixed;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 1rem 1.2rem;
+    max-width: 280px;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.15s;
+    z-index: 100;
+  }
+
+  #tooltip.visible { opacity: 1; }
+
+  #tooltip h3 {
+    font-size: 1rem;
+    font-weight: 500;
+    color: var(--text-bright);
+    margin-bottom: 0.4rem;
+  }
+
+  #tooltip p {
+    font-size: 0.85rem;
+    line-height: 1.5;
+    color: var(--text-dim);
+  }
+
+  #tooltip .tip-layer {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    margin-top: 0.6rem;
+    letter-spacing: 0.04em;
+  }
+
+  /* Node list (below graph) */
+  .nodes-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0;
+    border-top: 1px solid var(--border);
+  }
+
+  .node-card {
+    padding: 1.5rem 2rem;
+    border-right: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    text-decoration: none;
+    color: inherit;
+    transition: background 0.15s;
+    display: block;
+  }
+
+  .node-card:nth-child(4n) { border-right: none; }
+
+  .node-card:hover { background: var(--surface); }
+
+  .node-card .card-layer {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 0.4rem;
+  }
+
+  .node-card h3 {
+    font-size: 1rem;
+    font-weight: 400;
+    color: var(--text-bright);
+    margin-bottom: 0.3rem;
+    line-height: 1.3;
+  }
+
+  .node-card p {
+    font-size: 0.82rem;
+    color: var(--text-dim);
+    line-height: 1.5;
+  }
+
+  .layer-bio .card-layer { color: var(--layer-bio); }
+  .layer-immune .card-layer { color: var(--layer-immune); }
+  .layer-tech .card-layer { color: var(--layer-tech); }
+  .layer-ml .card-layer { color: var(--layer-ml); }
+
+  /* Footer */
+  footer {
+    padding: 2rem 4rem;
+    border-top: 1px solid var(--border);
+    font-size: 0.8rem;
+    color: var(--text-dim);
+    font-family: 'JetBrains Mono', monospace;
+    display: flex;
+    justify-content: space-between;
+  }
+
+  @media (max-width: 900px) {
+    header, .hero, .legend { padding-left: 1.5rem; padding-right: 1.5rem; }
+    .nodes-grid { grid-template-columns: repeat(2, 1fr); }
+    .nodes-grid .node-card:nth-child(4n) { border-right: 1px solid var(--border); }
+    .nodes-grid .node-card:nth-child(2n) { border-right: none; }
+    .hero h1 { font-size: 2rem; }
+    footer { flex-direction: column; gap: 0.5rem; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="site-title">/<span>amici-notes</span></div>
+  <div class="site-meta">
+    Studying for Azizi Lab, IMPACT · Columbia BME<br>
+    June 2026
+  </div>
+</header>
+
+<div class="hero">
+  <h1>Learning to read<br>the <em>spatial language</em><br>of tumors</h1>
+  <p>
+    Notes from studying <strong>AMICI</strong> — an attention-based model for inferring
+    cell–cell communication from spatial transcriptomics data. Built around
+    a CRC project comparing MSS vs. MSI tumor-immune interactions.
+  </p>
+</div>
+
+<div class="legend">
+  <div class="legend-item">
+    <div class="legend-dot" style="background:var(--layer-bio)"></div>
+    Cancer Biology
+  </div>
+  <div class="legend-item">
+    <div class="legend-dot" style="background:var(--layer-immune)"></div>
+    Immune System
+  </div>
+  <div class="legend-item">
+    <div class="legend-dot" style="background:var(--layer-tech)"></div>
+    Technology & Methods
+  </div>
+  <div class="legend-item">
+    <div class="legend-dot" style="background:var(--layer-ml)"></div>
+    ML & AMICI
+  </div>
+</div>
+
+<div class="graph-container">
+  <svg id="graph-svg"></svg>
+</div>
+
+<div id="tooltip">
+  <h3 id="tip-title"></h3>
+  <p id="tip-desc"></p>
+  <div class="tip-layer" id="tip-layer"></div>
+</div>
+
+<!-- Node cards -->
+<div class="nodes-grid" id="nodes-grid"></div>
+
+<footer>
+  <span>Click any node or card to read full notes</span>
+  <span>Drag to pan · Scroll to zoom</span>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+<script>
+const NODES = [
+  // Cancer Biology
+  { id: "crc", label: "Colorectal Cancer", layer: "bio", r: 28,
+    desc: "Adenocarcinoma of colon/rectum. >95% from epithelial gland cells. Divided into MSS, MSI, EMAST subtypes with very different immune behaviors.",
+    page: "pages/colorectal-cancer.html" },
+  { id: "mss-msi", label: "MSS vs MSI", layer: "bio", r: 26,
+    desc: "MSI = mismatch repair deficient → high mutation burden → more neoantigens → better immune response. MSS = repair-proficient → immunologically cold.",
+    page: "pages/mss-msi.html" },
+  { id: "heterogeneity", label: "Tumor Heterogeneity", layer: "bio", r: 22,
+    desc: "A tumor is not one clone but many subclones, each with different mutations. Like an ecosystem with factions. Selection pressure from chemo/immune shapes which clones survive.",
+    page: "pages/tumor-heterogeneity.html" },
+  { id: "pleiotropy", label: "Antagonistic Pleiotropy", layer: "bio", r: 18,
+    desc: "Same gene, opposite effects at different life stages. Evolution selects for young-age benefit, can't see post-reproductive harm. Explains why cancer risk accumulates with age.",
+    page: "pages/antagonistic-pleiotropy.html" },
+
+  // Immune System
+  { id: "tme", label: "Tumor Microenvironment", layer: "immune", r: 28,
+    desc: "The local ecosystem around a tumor: cancer cells, T cells, fibroblasts, macrophages, blood vessels. Not just a background — actively shapes tumor behavior.",
+    page: "pages/tme.html" },
+  { id: "tcell", label: "T Cell States", layer: "immune", r: 26,
+    desc: "CD8+ T cells can be effector (GZMB+, killing) or exhausted (PD-1+, TIM-3+, TOX+, not killing). Exhaustion is not death — it's active reprogramming by TOX.",
+    page: "pages/t-cell-states.html" },
+  { id: "checkpoint", label: "Immune Checkpoints", layer: "immune", r: 22,
+    desc: "PD-L1 (tumor) binds PD-1 (T cell) = brakes applied. Pembrolizumab blocks PD-1, releasing the brake. Works in MSI, mostly not in MSS.",
+    page: "pages/immune-checkpoints.html" },
+  { id: "differentiation", label: "Cell Differentiation", layer: "immune", r: 18,
+    desc: "Same DNA, different gene reading programs. Epigenetic state (which chromatin is open) defines cell identity. Exhaustion is a partial re-differentiation locked in by TOX.",
+    page: "pages/cell-differentiation.html" },
+
+  // Technology
+  { id: "spatial", label: "Spatial Transcriptomics", layer: "tech", r: 28,
+    desc: "Measures gene expression while preserving tissue location. Each cell: (x,y) coordinates + gene expression vector. Named Nature Methods technology of the year 2022.",
+    page: "pages/spatial-transcriptomics.html" },
+  { id: "cosmx", label: "CosMx 6k Panel", layer: "tech", r: 22,
+    desc: "NanoString platform. Fluorescent probes hybridize to 6,000 target genes in-situ. Imaged, counted, attributed to cells via DAPI nuclear staining.",
+    page: "pages/cosmx.html" },
+  { id: "scrna", label: "scRNA-seq", layer: "tech", r: 20,
+    desc: "Single-cell RNA sequencing. Dissociates tissue → loses spatial info. Tells you what cell types exist and their proportions, not where they sit relative to each other.",
+    page: "pages/scrna-seq.html" },
+  { id: "cellannot", label: "Cell Annotation", layer: "tech", r: 20,
+    desc: "UMAP dimensionality reduction → Leiden clustering → find marker genes per cluster → human assigns cell type labels. Last step requires biological expertise.",
+    page: "pages/cell-annotation.html" },
+
+  // ML & AMICI
+  { id: "vector", label: "Gene Expression Vector", layer: "ml", r: 24,
+    desc: "6000 gene counts = a point in 6000-dimensional space. Tables are for humans; vectors are for math. Cosine similarity measures how aligned two cells' expression patterns are.",
+    page: "pages/expression-vector.html" },
+  { id: "attention", label: "Attention Mechanism", layer: "ml", r: 26,
+    desc: "Weighted sum: given a target, assign weights to sources by relevance, then aggregate. Weight = f(expression similarity, distance decay). Softmax normalizes to sum=1.",
+    page: "pages/attention.html" },
+  { id: "amici", label: "AMICI", layer: "ml", r: 32,
+    desc: "Self-supervised: mask receiver cell's expression, predict it from spatial neighbors. If neighbors predict well, they influence the cell. Attention weights = who influences whom.",
+    page: "pages/amici.html" },
+  { id: "cellchat", label: "CellChat & Limits", layer: "ml", r: 20,
+    desc: "Prior-generation tool. Uses cell-type averages + ligand-receptor database. Misses: spatial context, single-cell variation, interactions outside the database.",
+    page: "pages/cellchat.html" },
+  { id: "causal", label: "Causality vs Correlation", layer: "ml", r: 22,
+    desc: "CellChat: correlation. AMICI: predictive (stronger). Knockout experiments: interventional (strongest). AMICI is the detective finding suspects; experiments are the court.",
+    page: "pages/causality.html" },
+];
+
+const LINKS = [
+  { source: "crc", target: "mss-msi" },
+  { source: "crc", target: "heterogeneity" },
+  { source: "heterogeneity", target: "pleiotropy" },
+  { source: "mss-msi", target: "tme" },
+  { source: "mss-msi", target: "checkpoint" },
+  { source: "tme", target: "tcell" },
+  { source: "tme", target: "checkpoint" },
+  { source: "tcell", target: "differentiation" },
+  { source: "tcell", target: "checkpoint" },
+  { source: "spatial", target: "cosmx" },
+  { source: "spatial", target: "scrna" },
+  { source: "spatial", target: "cellannot" },
+  { source: "cosmx", target: "amici" },
+  { source: "cellannot", target: "vector" },
+  { source: "vector", target: "attention" },
+  { source: "attention", target: "amici" },
+  { source: "amici", target: "tme" },
+  { source: "amici", target: "mss-msi" },
+  { source: "amici", target: "cellchat" },
+  { source: "amici", target: "causal" },
+  { source: "cellchat", target: "causal" },
+  { source: "spatial", target: "vector" },
+];
+
+const LAYER_COLORS = {
+  bio: "#c97b3a",
+  immune: "#7ab8a0",
+  tech: "#6b8fc4",
+  ml: "#a47bca"
+};
+
+const LAYER_LABELS = {
+  bio: "Cancer Biology",
+  immune: "Immune System",
+  tech: "Technology",
+  ml: "ML & AMICI"
+};
+
+// Build node cards
+const grid = document.getElementById('nodes-grid');
+NODES.forEach(n => {
+  const a = document.createElement('a');
+  a.className = `node-card layer-${n.layer}`;
+  a.href = n.page;
+  a.innerHTML = `
+    <div class="card-layer">${LAYER_LABELS[n.layer]}</div>
+    <h3>${n.label}</h3>
+    <p>${n.desc.slice(0, 90)}…</p>
+  `;
+  grid.appendChild(a);
+});
+
+// D3 Force graph
+const container = document.querySelector('.graph-container');
+const svg = d3.select('#graph-svg');
+const width = container.clientWidth;
+const height = container.clientHeight;
+
+const g = svg.append('g');
+
+// Zoom
+svg.call(d3.zoom().scaleExtent([0.4, 3]).on('zoom', e => {
+  g.attr('transform', e.transform);
+}));
+
+// Links
+const linkSel = g.selectAll('.link')
+  .data(LINKS)
+  .enter().append('line')
+  .attr('class', 'link');
+
+// Simulation
+const sim = d3.forceSimulation(NODES)
+  .force('link', d3.forceLink(LINKS).id(d => d.id).distance(d => {
+    const src = NODES.find(n => n.id === (d.source.id || d.source));
+    const tgt = NODES.find(n => n.id === (d.target.id || d.target));
+    return src && tgt ? (src.r + tgt.r) * 2.2 : 100;
+  }).strength(0.4))
+  .force('charge', d3.forceManyBody().strength(-320))
+  .force('center', d3.forceCenter(width / 2, height / 2))
+  .force('collision', d3.forceCollide().radius(d => d.r + 14));
+
+// Nodes
+const nodeSel = g.selectAll('.node')
+  .data(NODES)
+  .enter().append('g')
+  .attr('class', 'node')
+  .call(d3.drag()
+    .on('start', (e, d) => { if (!e.active) sim.alphaTarget(0.3).restart(); d.fx = d.x; d.fy = d.y; })
+    .on('drag', (e, d) => { d.fx = e.x; d.fy = e.y; })
+    .on('end', (e, d) => { if (!e.active) sim.alphaTarget(0); d.fx = null; d.fy = null; }));
+
+nodeSel.append('circle')
+  .attr('r', d => d.r)
+  .attr('fill', d => LAYER_COLORS[d.layer] + '22')
+  .attr('stroke', d => LAYER_COLORS[d.layer])
+  .attr('stroke-width', d => d.id === 'amici' ? 2.5 : 1.5);
+
+nodeSel.append('text')
+  .text(d => d.label.length > 14 ? d.label.split(' ').slice(0,2).join(' ') : d.label)
+  .attr('dy', d => d.label.split(' ').length > 2 ? '-0.3em' : '0');
+
+// Tooltip
+const tooltip = document.getElementById('tooltip');
+const tipTitle = document.getElementById('tip-title');
+const tipDesc = document.getElementById('tip-desc');
+const tipLayer = document.getElementById('tip-layer');
+
+nodeSel
+  .on('mousemove', (e, d) => {
+    tooltip.classList.add('visible');
+    tipTitle.textContent = d.label;
+    tipDesc.textContent = d.desc;
+    tipLayer.textContent = '→ ' + LAYER_LABELS[d.layer];
+    tipLayer.style.color = LAYER_COLORS[d.layer];
+    tooltip.style.left = (e.clientX + 16) + 'px';
+    tooltip.style.top = (e.clientY - 20) + 'px';
+  })
+  .on('mouseleave', () => tooltip.classList.remove('visible'))
+  .on('click', (e, d) => { window.location.href = d.page; });
+
+sim.on('tick', () => {
+  linkSel
+    .attr('x1', d => d.source.x).attr('y1', d => d.source.y)
+    .attr('x2', d => d.target.x).attr('y2', d => d.target.y);
+  nodeSel.attr('transform', d => `translate(${d.x},${d.y})`);
+});
+</script>
+</body>
+</html>
